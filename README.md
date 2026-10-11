@@ -325,6 +325,6 @@ MIT © 2024 Janardhan S.
 
 *Built with obsessive attention to detail for people who need their money to last.*
 
-**[🚀 Try Runway Live](https://runway-v2.vercel.app)**
+**[🚀 Try Runway Live](https://runway-coral-two.vercel.app)**
 
 </div>
