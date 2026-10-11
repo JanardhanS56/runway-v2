@@ -181,10 +181,10 @@ export const useRunwayStore = create<RunwayState>()(
       },
 
       fastForward: (targetDay = 30) => {
-        set({
-          currentDay: Math.min(30, targetDay),
-          activeDay: Math.min(30, targetDay),
-        })
+        const destination = Math.min(30, Math.max(1, targetDay))
+        while (get().currentDay < destination) {
+          get().advanceDay()
+        }
       },
 
       setActiveDay: (day: number) => {

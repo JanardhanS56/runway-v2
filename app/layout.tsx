@@ -3,8 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Runway · Decision Lab',
-  description: 'Preview the ripple effect before you commit.',
+  title: 'Runway · Survive the Month',
+  description: 'Make every rupee last 30 days. Simulate spending decisions, protect your balance, and build a safer financial runway.',
   icons: {
     icon: [
       {

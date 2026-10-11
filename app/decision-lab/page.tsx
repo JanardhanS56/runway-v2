@@ -108,6 +108,9 @@ function DecisionLabContent() {
   const currentDay = useRunwayStore((s) => s.currentDay)
   const baseAllowance = useRunwayStore((s) => s.getDailyAllowance())
   const baseForecast = useRunwayStore((s) => s.getEndForecast())
+  const goals = useRunwayStore((s) => s.goals)
+  const baseRisk = useRunwayStore((s) => s.getRiskPercentage())
+  const baseHealth = useRunwayStore((s) => s.getHealthScore())
   const commitDecision = useRunwayStore((s) => s.commitDecision)
 
   const [decisionName, setDecisionName] = useState('Sneakers')
@@ -141,13 +144,14 @@ function DecisionLabContent() {
     ? baseForecast + Math.abs(amount)
     : baseForecast - amount
 
-  const baseRisk = 12
-  const baseHealth = 82
-  const riskIncrease = Math.round((amount / 3000) * 55)
+  const riskIncrease = Math.round((Math.abs(amount) / 3000) * 55)
   const simulatedRisk = Math.min(95, Math.max(5, baseRisk + (amount > 0 ? riskIncrease : -5)))
-  const healthImpact = Math.round((amount / 2500) * 35)
+  const healthImpact = Math.round((Math.abs(amount) / 2500) * 35)
   const simulatedHealth = Math.min(99, Math.max(15, baseHealth - (amount > 0 ? healthImpact : -4)))
-
+  const activeGoal = goals.find((goal) => goal.priority === 'Essential') ?? goals[0]
+  const simulatedGoalSaved = activeGoal
+    ? Math.max(0, activeGoal.saved - (decisionType === 'goal' ? Math.abs(amount) : 0))
+    : 0
   const isSevere = simulatedForecast < 0 || simulatedRisk > 50
   const isModerate = simulatedForecast < 1000 || simulatedRisk > 25
 
@@ -293,38 +297,14 @@ function DecisionLabContent() {
                 </div>
               </div>
 
-              {/* Delta Chips */}
+              {/* Delta Chips: every decision shows its ripple across the six outcomes. */}
               <div className="delta-chips-grid">
-                <div className="delta-chip">
-                  <span>Balance</span>
-                  <strong>₹{simulatedBalance.toLocaleString('en-IN')}</strong>
-                  <small className={simulatedBalance < baseBalance ? 'down' : 'up'}>
-                    {simulatedBalance < baseBalance ? '▼' : '▲'} ₹{Math.abs(simulatedBalance - baseBalance).toLocaleString('en-IN')}
-                  </small>
-                </div>
-                <div className="delta-chip">
-                  <span>Daily Allowance</span>
-                  <strong>₹{simulatedAllowance} / day</strong>
-                  <small className={simulatedAllowance < baseAllowance ? 'down' : 'up'}>
-                    {simulatedAllowance < baseAllowance ? '▼' : '▲'} ₹{Math.abs(simulatedAllowance - baseAllowance)}
-                  </small>
-                </div>
-                <div className="delta-chip">
-                  <span>Day 30 Forecast</span>
-                  <strong style={{ color: simulatedForecast < 0 ? 'var(--danger)' : 'var(--foreground)' }}>
-                    ₹{simulatedForecast.toLocaleString('en-IN')}
-                  </strong>
-                  <small className={simulatedForecast < baseForecast ? 'down' : 'up'}>
-                    {simulatedForecast < baseForecast ? '▼' : '▲'} ₹{Math.abs(simulatedForecast - baseForecast).toLocaleString('en-IN')}
-                  </small>
-                </div>
-                <div className="delta-chip">
-                  <span>Risk & Health</span>
-                  <strong>{simulatedRisk}% risk · {simulatedHealth} pts</strong>
-                  <small className={simulatedHealth < baseHealth ? 'down' : 'up'}>
-                    {simulatedHealth < baseHealth ? '▼' : '▲'} {Math.abs(simulatedHealth - baseHealth)} pts
-                  </small>
-                </div>
+                <div className="delta-chip"><span>Balance</span><strong>₹{simulatedBalance.toLocaleString('en-IN')}</strong><small className={simulatedBalance < baseBalance ? 'down' : 'up'}>{simulatedBalance < baseBalance ? '▼' : '▲'} ₹{Math.abs(simulatedBalance - baseBalance).toLocaleString('en-IN')}</small></div>
+                <div className="delta-chip"><span>Daily Allowance</span><strong>₹{simulatedAllowance} / day</strong><small className={simulatedAllowance < baseAllowance ? 'down' : 'up'}>{simulatedAllowance < baseAllowance ? '▼' : '▲'} ₹{Math.abs(simulatedAllowance - baseAllowance)}</small></div>
+                <div className="delta-chip"><span>Day 30 Forecast</span><strong style={{ color: simulatedForecast < 0 ? 'var(--danger)' : 'var(--foreground)' }}>₹{simulatedForecast.toLocaleString('en-IN')}</strong><small className={simulatedForecast < baseForecast ? 'down' : 'up'}>{simulatedForecast < baseForecast ? '▼' : '▲'} ₹{Math.abs(simulatedForecast - baseForecast).toLocaleString('en-IN')}</small></div>
+                <div className="delta-chip"><span>{activeGoal?.name ?? 'Savings goal'}</span><strong>₹{simulatedGoalSaved.toLocaleString('en-IN')}</strong><small className={simulatedGoalSaved < (activeGoal?.saved ?? 0) ? 'down' : 'up'}>{simulatedGoalSaved < (activeGoal?.saved ?? 0) ? '▼' : '▲'} {decisionType === 'goal' ? 'transfer' : 'protected'}</small></div>
+                <div className="delta-chip"><span>Financial Risk</span><strong>{simulatedRisk}%</strong><small className={simulatedRisk > baseRisk ? 'down' : 'up'}>{simulatedRisk > baseRisk ? '▲' : '▼'} {Math.abs(simulatedRisk - baseRisk)} pts</small></div>
+                <div className="delta-chip"><span>Financial Health</span><strong>{simulatedHealth} / 100</strong><small className={simulatedHealth < baseHealth ? 'down' : 'up'}>{simulatedHealth < baseHealth ? '▼' : '▲'} {Math.abs(simulatedHealth - baseHealth)} pts</small></div>
               </div>
 
               {/* Smart Advisor */}
