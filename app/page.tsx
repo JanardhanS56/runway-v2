@@ -22,11 +22,11 @@ import {
 } from 'lucide-react'
 
 const navItems = [
-  { label: 'Cockpit', icon: Home },
-  { label: 'Decision Lab', icon: Zap },
-  { label: 'Money', icon: WalletCards },
-  { label: 'Goals', icon: Target },
-  { label: 'Health', icon: Gauge },
+  { label: 'Cockpit', href: '/', icon: Home },
+  { label: 'Decision Lab', href: '/decision-lab', icon: Zap },
+  { label: 'Money', href: '/money', icon: WalletCards },
+  { label: 'Goals', href: '/goals', icon: Target },
+  { label: 'Health', href: '/health', icon: Gauge },
 ]
 
 const events = [
@@ -41,7 +41,7 @@ const events = [
 function Sidebar({ mobile = false }: { mobile?: boolean }) {
   return <nav className={mobile ? 'mobile-nav' : 'sidebar'} aria-label="Primary navigation">
     {!mobile && <div className="brand"><span className="brand-mark"><Zap size={15} fill="currentColor" /></span><span>Runway</span></div>}
-    <div className={mobile ? 'mobile-nav-items' : 'nav-items'}>{navItems.map(({ label, icon: Icon }) => <a href="#" key={label} className={`nav-link ${label === 'Cockpit' ? 'active' : ''}`} aria-current={label === 'Cockpit' ? 'page' : undefined}><Icon size={18} strokeWidth={1.8} /><span>{mobile && label === 'Decision Lab' ? 'Lab' : label}</span></a>)}</div>
+    <div className={mobile ? 'mobile-nav-items' : 'nav-items'}>{navItems.map(({ label, href, icon: Icon }) => <a href={href} key={label} className={`nav-link ${label === 'Cockpit' ? 'active' : ''}`} aria-current={label === 'Cockpit' ? 'page' : undefined}><Icon size={18} strokeWidth={1.8} /><span>{mobile && label === 'Decision Lab' ? 'Lab' : label}</span></a>)}</div>
     {!mobile && <div className="sidebar-bottom"><a href="#" className="nav-link"><Settings2 size={18} /> Settings</a><div className="profile"><span className="avatar">AS</span><span><strong>Arjun S.</strong><small>Personal runway</small></span><ChevronRight size={15} /></div></div>}
   </nav>
 }

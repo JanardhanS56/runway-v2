@@ -5,10 +5,10 @@ import { ArrowRight, CalendarDays, Check, ChevronDown, Home, Plus, Settings2, Ta
 
 const navItems = [
   { label: 'Cockpit', href: '/', icon: Home },
-  { label: 'Decision Lab', href: '#', icon: Zap },
+  { label: 'Decision Lab', href: '/decision-lab', icon: Zap },
   { label: 'Money', href: '/money', icon: WalletCards },
   { label: 'Goals', href: '/goals', icon: Target },
-  { label: 'Health', href: '#', icon: Gauge },
+  { label: 'Health', href: '/health', icon: Gauge },
 ]
 
 const initialGoals = [
